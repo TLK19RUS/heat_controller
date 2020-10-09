@@ -14,6 +14,7 @@ Adafruit_PCD8544 display = Adafruit_PCD8544(LCD_SCLK_PIN, LCD_DIN_PIN, LCD_DC_PI
 PCF8574 pcf8574_buttons(0x38,1,3);
 PCF8574::DigitalInput cur_state;
 uint8_t f_readbuttons = 0;
+uint8_t f_update_display = 0;
 
 Ticker ticker3;
 
@@ -27,5 +28,9 @@ void loop() {
   if (f_readbuttons==1){
     f_readbuttons = 0;
     readbuttons();
+  }
+  if (f_update_display==1){
+    f_update_display = 0;
+    update_display();
   }
 }
