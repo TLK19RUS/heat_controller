@@ -1,10 +1,12 @@
 #include "buttons.h"
-#include <Adafruit_PCD8544.h>
 #include <PCF8574.h>
 
 extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
-extern Adafruit_PCD8544 display;
+
+////////////////// временные переменные
+extern String last_bt;
+//////////////////
 
 void Init_buttons(){
   pcf8574_buttons.pinMode(P0, INPUT_PULLUP);
@@ -27,59 +29,31 @@ void Init_buttons(){
 }
 
 void bt_softl_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_softl_down");
-  display.display();
+  last_bt = "bt_softl_down"; 
 }
-//0
+
 void bt_softr_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_softr_down");
-  display.display();
+  last_bt = "bt_softr_down";
 }
-//5
+
 void bt_left_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_left_down");
-  display.display(); 
+  last_bt = "bt_left_down";
 }
-//1
+
 void bt_right_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_right_down");
-  display.display();  
+  last_bt = "bt_right_down";
 }
-//2
+
 void bt_up_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_up_down");
-  display.display();
+  last_bt = "bt_up_down";
 }
-//6
+
 void bt_down_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_down_down");
-  display.display();
+  last_bt = "bt_down_down";
 }
-//3
+
 void bt_ok_down(){
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.print("bt_ok_down");
-  display.display();
+  last_bt = "bt_ok_down";
 }
 
 

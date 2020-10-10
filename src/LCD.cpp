@@ -1,21 +1,29 @@
 #include <Arduino.h>
 #include "LCD.h"
 #include <Adafruit_GFX.h>
-#include <Adafruit_PCD8544.h>
+//#include <Adafruit_PCD8544.h>
+#include <PCF8574_PCD8544.h>
 #include <ESP8266WiFi.h>
 
-extern Adafruit_PCD8544 display;
+extern PCF8574_PCD8544 display;
+
+////////////////// временные переменные
+extern String last_bt;
+//////////////////
 
 void Init_LCD(){
-  pinMode(LCD_BL_PIN, OUTPUT);
-  display.begin();
+  display.begin(1000000L, LCD_SDA, LCD_SCL);
   display.cp437(true);
   display.clearDisplay();
   display.display();
   display.setContrast(60);
   display.setTextSize(1);
   display.setTextColor(BLACK);
-  digitalWrite(LCD_BL_PIN, 1);
+  set_bl(BL_ON);
+}
+
+void set_bl(uint8_t bl){
+ display.digitalWrite(LCD_BL_PIN, bl);
 }
 
 void update_display()
@@ -24,6 +32,13 @@ void update_display()
   //draw_time();
   //draw_heater();
   drawRSSI();
+
+  //////////////////////
+  display.setTextSize(1);
+  display.setCursor(0, 12);
+  display.print(last_bt);
+  ///////////////////
+
   display.display();
   //digitalWrite(LCD_BL_PIN, settings[T_BL]);
 }
@@ -31,7 +46,6 @@ void update_display()
 
 
 void drawRSSI() {
-  WiFi.begin("","");
   display.drawBitmap(58, 0,  antenna_bmp, 8, 8, 1);
   if (WiFi.status() == WL_CONNECTED) {
     if (WiFi.RSSI() > -50 && WiFi.RSSI() < 0)

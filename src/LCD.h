@@ -1,9 +1,17 @@
 #include <Arduino.h>
-#define LCD_RST_PIN 4
-#define LCD_DC_PIN  12
-#define LCD_DIN_PIN 13
-#define LCD_SCLK_PIN  14
-#define LCD_BL_PIN  15
+#define LCD_ADDR 36 // 0x24
+#define LCD_SDA 1
+#define LCD_SCL 3
+//// PCF8574 pins
+#define LCD_RST_PIN 2
+#define LCD_BL_PIN  3
+#define LCD_CE_PIN  4
+#define LCD_DC_PIN  5
+#define LCD_DIN_PIN 6
+#define LCD_SCLK_PIN 7 
+////
+#define BL_ON 1
+#define BL_OFF 0
 
 static const unsigned char PROGMEM wifi_off_bmp[] =
 { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6D, 0xB6, 0x00, 0x00 };
@@ -27,6 +35,7 @@ static const unsigned char PROGMEM antenna_bmp[] =
 { 0x99, 0xDB, 0x7E, 0x3C, 0x18, 0x18, 0x18, 0x00 };
 
 void Init_LCD();
+void set_bl(uint8_t bl);
 void drawstrc1(uint8_t _y, String source, uint8_t _ts);
 String utf8rus(String source);
 void update_display();

@@ -1,3 +1,7 @@
+#define BUTTONS_ADDR 56//0x38
+#define BUTTONS_SDA 1
+#define BUTTONS_SCL 3
+
 void Init_buttons();
 void bt_softl_down();
 void bt_softr_down();
