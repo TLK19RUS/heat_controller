@@ -2,12 +2,14 @@
 #include <Ticker.h>
 #include "func.h"
 #include "LCD.h"
+#include "RTC.h"
 #include "buttons.h"
 #include "timers.h"
 #include <Adafruit_GFX.h>
 #include <PCF8574_PCD8544.h>
 //#include <Adafruit_PCD8544.h>
 #include <PCF8574.h>
+#include <PCF8583.h>
 
 PCF8574_PCD8544 display = PCF8574_PCD8544(LCD_ADDR, LCD_SCLK_PIN, LCD_DIN_PIN, LCD_DC_PIN, LCD_CE_PIN, LCD_RST_PIN);
 uint8_t f_update_display = 0;
@@ -19,7 +21,16 @@ PCF8574 pcf8574_buttons(BUTTONS_ADDR, BUTTONS_SDA, BUTTONS_SCL);
 PCF8574::DigitalInput cur_state;
 uint8_t f_readbuttons = 0;
 
+PCF8583 rtc(0xA0);
+uint8_t f_update_rtc = 0;
+uint8_t time_blink = 1;
+uint8_t t_hour=0;
+uint8_t t_minute=0;
+uint8_t t_sec=0;
+char ctime1[6]="--:--";
+
 Ticker ticker1;
+Ticker ticker2;
 Ticker ticker3;
 
 
@@ -31,13 +42,6 @@ String last_bt = "";
 void setup() {
   Init_buttons();
   Init_LCD();
-  
-  //display.clearDisplay();
-  //display.setTextSize(1);
-  //display.setTextColor(BLACK);
-  //display.setCursor(0, 0);
-  //display.print("hello");
-  //display.display();
   Init_timers();
 }
 
@@ -45,6 +49,10 @@ void loop() {
   if (f_readbuttons==1){
     f_readbuttons = 0;
     readbuttons();
+  }
+  if (f_update_rtc==1){
+    f_update_rtc = 0;
+    get_rtc_time();
   }
   if (f_update_display==1){
     f_update_display = 0;

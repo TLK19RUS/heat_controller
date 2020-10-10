@@ -6,6 +6,7 @@
 #include <ESP8266WiFi.h>
 
 extern PCF8574_PCD8544 display;
+extern char ctime1[6];
 
 ////////////////// временные переменные
 extern String last_bt;
@@ -29,7 +30,7 @@ void set_bl(uint8_t bl){
 void update_display()
 {
   display.clearDisplay();
-  //draw_time();
+  draw_time();
   //draw_heater();
   drawRSSI();
 
@@ -43,7 +44,11 @@ void update_display()
   //digitalWrite(LCD_BL_PIN, settings[T_BL]);
 }
 
-
+void draw_time(){
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.print(ctime1);
+}
 
 void drawRSSI() {
   display.drawBitmap(58, 0,  antenna_bmp, 8, 8, 1);

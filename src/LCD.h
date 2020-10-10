@@ -39,4 +39,5 @@ void set_bl(uint8_t bl);
 void drawstrc1(uint8_t _y, String source, uint8_t _ts);
 String utf8rus(String source);
 void update_display();
+void draw_time();
 void drawRSSI();
