@@ -1,11 +1,16 @@
 #include "buttons.h"
 #include <PCF8574.h>
+#include "settings.h"
+#include <PCF8583.h>
 
 extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
 
 ////////////////// временные переменные
 extern String last_bt;
+extern uint8_t set_arr[];
+extern PCF8583 rtc;
+extern int set_cnt;
 //////////////////
 
 void Init_buttons(){
@@ -54,6 +59,15 @@ void bt_down_down(){
 
 void bt_ok_down(){
   last_bt = "bt_ok_down";
+  set_arr[0] = 1;
+  set_arr[1] = 2;
+  set_arr[2] = 3;
+  set_arr[3] = 4;
+  set_arr[236] = 237;
+  set_arr[237] = 238;
+  set_arr[238] = 239;
+  set_arr[239] = 240;
+  set_cnt = rtc.setROM(set_arr);
 }
 
 

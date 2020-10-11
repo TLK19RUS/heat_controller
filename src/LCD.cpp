@@ -7,9 +7,11 @@
 
 extern PCF8574_PCD8544 display;
 extern char ctime1[6];
+extern uint8_t set_arr[];
 
 ////////////////// временные переменные
 extern String last_bt;
+extern int set_cnt;
 //////////////////
 
 void Init_LCD(){
@@ -38,6 +40,24 @@ void update_display()
   display.setTextSize(1);
   display.setCursor(0, 12);
   display.print(last_bt);
+  display.setCursor(0, 20);
+  display.print(set_arr[0]);
+  display.print(".");
+  display.print(set_arr[1]);
+  display.print(".");
+  display.print(set_arr[2]);
+  display.print(".");
+  display.print(set_arr[3]);
+  display.setCursor(0, 30);
+  display.print(set_arr[236]);
+  display.print(".");
+  display.print(set_arr[237]);
+  display.print(".");
+  display.print(set_arr[238]);
+  display.print(".");
+  display.print(set_arr[239]);
+  display.setCursor(0, 38);
+  display.print(set_cnt);
   ///////////////////
 
   display.display();

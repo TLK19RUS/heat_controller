@@ -109,6 +109,10 @@ class PCF8583 {
         void setRegister(uint8_t offset, uint8_t value);
         uint8_t getRegister(uint8_t offset);
 
+        // read ROM area
+        int getROM(uint8_t* _rom);
+        uint8_t setROM(uint8_t* _rom);
+
     private:
 
         void stop();

@@ -5,6 +5,7 @@
 #include "RTC.h"
 #include "buttons.h"
 #include "timers.h"
+#include "settings.h"
 #include <Adafruit_GFX.h>
 #include <PCF8574_PCD8544.h>
 //#include <Adafruit_PCD8544.h>
@@ -29,6 +30,8 @@ uint8_t t_minute=0;
 uint8_t t_sec=0;
 char ctime1[6]="--:--";
 
+uint8_t set_arr[240];
+
 Ticker ticker1;
 Ticker ticker2;
 Ticker ticker3;
@@ -37,9 +40,11 @@ Ticker ticker3;
 
 ////////////////// временные переменные
 String last_bt = "";
+int set_cnt = 0;
 //////////////////
 
 void setup() {
+  Init_settings();
   Init_buttons();
   Init_LCD();
   Init_timers();
