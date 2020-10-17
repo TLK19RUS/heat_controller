@@ -41,3 +41,5 @@ String utf8rus(String source);
 void update_display();
 void draw_time();
 void drawRSSI();
+void draw_soft_bt();
+void draw_menu_new();

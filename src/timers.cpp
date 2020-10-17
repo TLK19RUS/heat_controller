@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Ticker.h>
 #include "timers.h"
+#include "menu.h"
 
 extern Ticker ticker1;
 extern Ticker ticker2;
@@ -10,6 +11,7 @@ extern uint8_t f_update_display;
 extern uint8_t f_update_rtc;
 
 
+
 void Init_timers(){
   ticker1.attach(1, timer1);
   ticker2.attach(0.5, timer05);
@@ -17,7 +19,7 @@ void Init_timers(){
 }
 
 void timer1(){
-  
+  menu_check();
 }
 
 void timer05(){

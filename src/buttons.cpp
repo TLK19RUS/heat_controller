@@ -2,9 +2,12 @@
 #include <PCF8574.h>
 #include "settings.h"
 #include <PCF8583.h>
+#include "menu.h"
+#include "main.h"
 
 extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
+extern uint8_t state;
 
 ////////////////// временные переменные
 extern String last_bt;
@@ -34,40 +37,89 @@ void Init_buttons(){
 }
 
 void bt_softl_down(){
-  last_bt = "bt_softl_down"; 
+  switch(state){
+    case STATE_MAIN:
+      menu_show();  
+    break;
+    case STATE_MENU:
+      menu_up_level();  
+      menu_touch();
+    break;
+    case STATE_CONFIRM:
+    //  hide_confirm_dialog(true);
+    break;
+  }
+
 }
 
 void bt_softr_down(){
-  last_bt = "bt_softr_down";
+  switch(state){
+    case STATE_MAIN:
+       
+    break;
+    case STATE_MENU:
+      
+    break;
+    case STATE_CONFIRM:
+    //  hide_confirm_dialog(false);
+    break;
+  }
+
 }
 
 void bt_left_down(){
-  last_bt = "bt_left_down";
+  
 }
 
 void bt_right_down(){
-  last_bt = "bt_right_down";
+  
 }
 
 void bt_up_down(){
-  last_bt = "bt_up_down";
+  switch(state){
+    case STATE_MAIN:
+      
+    break;
+    case STATE_MENU:
+      menu_prev_item();
+      menu_touch();
+    break;
+  }
+
 }
 
 void bt_down_down(){
-  last_bt = "bt_down_down";
+  switch(state){
+    case STATE_MAIN:
+      
+    break;
+    case STATE_MENU:
+      menu_next_item();
+      menu_touch();
+    break;
+  }
 }
 
 void bt_ok_down(){
-  last_bt = "bt_ok_down";
-  set_arr[0] = 1;
-  set_arr[1] = 2;
-  set_arr[2] = 3;
-  set_arr[3] = 4;
-  set_arr[236] = 237;
-  set_arr[237] = 238;
-  set_arr[238] = 239;
-  set_arr[239] = 240;
-  set_cnt = rtc.setROM(set_arr);
+  switch(state){
+    case STATE_MAIN:
+      
+    break;
+    case STATE_MENU:
+      menu_action(true);  
+      menu_touch();
+    break;
+  }
+  //last_bt = "bt_ok_down";
+  //set_arr[0] = 1;
+  //set_arr[1] = 2;
+  //set_arr[2] = 3;
+  //set_arr[3] = 4;
+  //set_arr[236] = 237;
+  //set_arr[237] = 238;
+  //set_arr[238] = 239;
+  //set_arr[239] = 240;
+  //set_cnt = rtc.setROM(set_arr);
 }
 
 

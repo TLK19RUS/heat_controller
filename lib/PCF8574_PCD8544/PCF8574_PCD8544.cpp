@@ -386,9 +386,9 @@ void PCF8574_PCD8544::data(uint8_t c)
     digitWrite(_cs, LOW);
   if(isI2C())
   {
-		Serial.print(F("I2C data("));
-		Serial.print(c);
-		Serial.println(F(")"));
+		//Serial.print(F("I2C data("));
+		//Serial.print(c);
+		//Serial.println(F(")"));
   	i2cWrite(c);
   }
   else

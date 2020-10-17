@@ -1,0 +1,3 @@
+#define STATE_MAIN 0
+#define STATE_MENU 1
+#define STATE_CONFIRM 2
