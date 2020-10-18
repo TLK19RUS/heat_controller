@@ -35,16 +35,23 @@ uint8_t set_arr[240];
 Ticker ticker1;
 Ticker ticker2;
 Ticker ticker3;
+Ticker ticker4;
 
 uint8_t state = STATE_MAIN;
+uint8_t prev_state;
+bool confirm_dialog_visible = false;
+String confirm_dialog_text = "";
 
 menu_item current_menu;
 uint8_t menu_cursor_pos=1;
 uint8_t menu_showed=0;
 
+String list_str;
+
 ////////////////// временные переменные
 String last_bt = "";
 int set_cnt = 0;
+uint8_t debug_cnt=0;
 //////////////////
 
 void setup() {

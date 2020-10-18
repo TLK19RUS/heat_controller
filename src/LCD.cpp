@@ -12,11 +12,14 @@ extern uint8_t set_arr[];
 extern uint8_t state;
 extern menu_item current_menu;
 extern uint8_t menu_cursor_pos;
+extern String confirm_dialog_text;
+extern String list_str;
 
 ////////////////// временные переменные
 extern String last_bt;
 extern int set_cnt;
 station_config cfg;
+extern uint8_t debug_cnt;
 //////////////////
 
 void Init_LCD(){
@@ -38,54 +41,28 @@ void update_display()
 {
   display.clearDisplay();
   draw_time();
+
+  display.setCursor(35, 0);
+  display.print(debug_cnt);
+
   //draw_heater();
   drawRSSI();
   
   if (state == STATE_MENU){
-   draw_menu_new();
+    draw_menu_new();
+  }
+  if (state == STATE_CONFIRM){
+    draw_confirm_dialog();
+  }
+  if (state==STATE_WIFI_SCAN){
+    draw_wifi_scan();
+  }
+  if (state==STATE_WIFI_SCAN_COMPLETED){
+    draw_wifi_scan_completed();
   }
 
-  /*wifi_station_get_config(&cfg);
-  display.setCursor(0, 12);
-  display.print((char *)cfg.ssid);
-  display.setCursor(0, 20);
-  display.print((char *)cfg.password);
-  display.setCursor(0, 28);
-  display.print(cfg.bssid[0], HEX);
-  display.print(":");
-  display.print(cfg.bssid[1], HEX);
-  display.print(":");
-  display.print(cfg.bssid[2], HEX);
-  display.print(":");
-  display.print(cfg.bssid[3], HEX);
-  display.print(":");
-  display.print(cfg.bssid[4], HEX);
-  display.print(":");
-  display.print(cfg.bssid[5], HEX);*/
-
-  //////////////////////
-  /*display.setTextSize(1);
-  display.setCursor(0, 12);
-  display.print(last_bt);
-  display.setCursor(0, 20);
-  display.print(set_arr[0]);
-  display.print(".");
-  display.print(set_arr[1]);
-  display.print(".");
-  display.print(set_arr[2]);
-  display.print(".");
-  display.print(set_arr[3]);
-  display.setCursor(0, 30);
-  display.print(set_arr[236]);
-  display.print(".");
-  display.print(set_arr[237]);
-  display.print(".");
-  display.print(set_arr[238]);
-  display.print(".");
-  display.print(set_arr[239]);
-  display.setCursor(0, 38);
-  display.print(set_cnt);*/
-  ///////////////////
+  /*wifi_station_get_config(&cfg);*/
+  
   draw_soft_bt();
   display.display();
   //digitalWrite(LCD_BL_PIN, settings[T_BL]);
@@ -131,33 +108,95 @@ void draw_soft_bt(){
   display.setTextSize(1);
   if (state==STATE_MAIN){
    display.setCursor(0, 40);
-   display.print(utf8rus("МЕНЮ"));  
+   display.print(utf8rus("меню"));  
   }
   if (state==STATE_MENU){
    display.setCursor(0, 40);
-   display.print(utf8rus("НАЗАД"));
+   display.print(utf8rus("назад"));
    display.setCursor(54, 40);
-   display.print(utf8rus("ВЫХОД"));
+   display.print(utf8rus("выход"));
   }
+  if ((state==STATE_WIFI_SCAN) || (state==STATE_WIFI_SCAN_COMPLETED)){
+   display.setCursor(0, 40);
+   display.print(utf8rus("назад"));
+  }
+}
+
+void draw_confirm_dialog(){
+  display.setTextSize(1);
+  drawstrc1(15, utf8rus(confirm_dialog_text), 1);
+  display.setCursor(0, 40);
+  display.print(utf8rus("ДА"));
+  display.setCursor(66, 40);
+  display.print(utf8rus("НЕТ"));
+}
+
+void draw_wifi_scan(){
+  display.setCursor(2, 12);
+  display.print(utf8rus("поиск сетей"));
+}
+
+void draw_wifi_scan_completed(){
+  int8_t sc = WiFi.scanComplete();
+  if (sc>0){
+    draw_list(0);
+  }
+  else{
+    display.setCursor(2, 12);
+    display.print(utf8rus("Wi-Fi сети"));
+    display.setCursor(2, 20);
+    display.print(utf8rus("не найдены"));
+  }
+}
+
+void draw_list(uint8_t start){
+  int ci = list_str.indexOf('|');
+  int fi = 0;
+  uint8_t i=0;
+  debug_cnt = 1;
+  while (ci != -1){
+    if (i>=start){
+      display.setCursor(6, 8+8*(i-start));
+      display.print(list_str.substring(fi, ci));
+    }
+    fi = ci + 1;
+    ci = list_str.indexOf('|', ci+1);
+    i++;
+    if (i>=start+4){
+      break;
+    }
+    debug_cnt++;
+  }
+ 
+
+  /*char* line = strtok((char*)list_str.c_str(), "\n");
+  uint8_t i=0;
+  while (line != 0)
+  {
+      display.setCursor(6, 8+8*i);
+      display.print(line);
+      // Find the next command in input string
+      line = strtok(0, "\n");
+      i++;
+      //debug_cnt = i;
+      if (i>3){
+        break;
+      }
+  }*/
 }
 
 void draw_menu_new(){
   display.setTextSize(1);
    
-  //if (menu_cursor_pos==1){
-
-  //}
-  
   byte mi_cnt = menu_get_items_count();
 
   menu_item menu_list[mi_cnt];
   menu_get_all_items(menu_list);
-
   for (byte i=0; i<mi_cnt;i++){
     display.setCursor(6, 8 + 8*i);  
     if (menu_list[i].id==current_menu.id){
       display.setCursor(0, 8 + 8*i);
-      display.print(">");
+      display.print((char)187);
     }
     display.print(utf8rus(menu_list[i].name));
   }

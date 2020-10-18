@@ -1,10 +1,14 @@
 #include "menu.h"
 #include "main.h"
+#include "WIFI.h"
 
 extern uint8_t state;
 extern menu_item current_menu;
 extern uint8_t menu_cursor_pos;
 extern uint8_t menu_showed;
+extern uint8_t prev_state;
+extern bool confirm_dialog_visible;
+extern String confirm_dialog_text;
 
 void menu_show(){
   current_menu = main_menu[0];
@@ -27,10 +31,12 @@ void menu_check(){
     if (menu_showed>menu_show_time){
       if (state==STATE_MENU){
         menu_hide();
-      }// else if (state==STATE_CONFIRM){
-      //  hide_confirm_dialog(false);
-      //}
+      } else if (state==STATE_CONFIRM){
+        hide_confirm_dialog(false);
+      }
     }
+  }else{
+    menu_touch();  
   }
 }
 
@@ -169,12 +175,35 @@ void menu_action(bool confirm){
     //return;
   }
   if (current_menu.action==MENU_REBOOT) {
-    //if (confirm){
-    //  show_confirm_dialog("Перезагрузка?");
-    //}else{
-    //  settings[T_MODE] = MODE_OFF;
-    //  ESP.restart();
-    //  return;
-    //}
+    if (confirm){
+      show_confirm_dialog("Перезагрузка?");
+    }else{
+      //settings[T_MODE] = MODE_OFF;
+      ESP.restart();
+      return;
+    }
+  }
+  if (current_menu.action==MENU_WIFI_SCAN) {
+    prev_state = state;
+    state = STATE_WIFI_SCAN;
+    start_scan();
+    return;
+  }
+}
+
+void show_confirm_dialog(String text){
+  confirm_dialog_text = text;
+  confirm_dialog_visible = true;
+  prev_state = state;
+  state = STATE_CONFIRM;
+  menu_touch();
+}
+
+void hide_confirm_dialog(bool action){
+  confirm_dialog_visible = false;
+  state = prev_state;
+  menu_touch();
+  if (action){
+    menu_action(false);
   }
 }

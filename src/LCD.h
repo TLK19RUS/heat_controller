@@ -43,3 +43,7 @@ void draw_time();
 void drawRSSI();
 void draw_soft_bt();
 void draw_menu_new();
+void draw_confirm_dialog();
+void draw_wifi_scan();
+void draw_wifi_scan_completed();
+void draw_list(uint8_t start);

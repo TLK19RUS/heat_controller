@@ -4,10 +4,12 @@
 #include <PCF8583.h>
 #include "menu.h"
 #include "main.h"
+#include "WIFI.h"
 
 extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
 extern uint8_t state;
+extern uint8_t prev_state;
 
 ////////////////// временные переменные
 extern String last_bt;
@@ -46,7 +48,15 @@ void bt_softl_down(){
       menu_touch();
     break;
     case STATE_CONFIRM:
-    //  hide_confirm_dialog(true);
+      hide_confirm_dialog(true);
+    break;
+    case STATE_WIFI_SCAN:
+      state = prev_state;
+      stop_scan();
+    break;
+    case STATE_WIFI_SCAN_COMPLETED:
+      state = prev_state;
+      stop_scan();
     break;
   }
 
@@ -55,13 +65,13 @@ void bt_softl_down(){
 void bt_softr_down(){
   switch(state){
     case STATE_MAIN:
-       
-    break;
-    case STATE_MENU:
       
     break;
+    case STATE_MENU:
+      menu_hide();
+    break;
     case STATE_CONFIRM:
-    //  hide_confirm_dialog(false);
+      hide_confirm_dialog(false);
     break;
   }
 
@@ -134,7 +144,7 @@ void bt_ok_up(){}
 
 void readbuttons(){
   PCF8574::DigitalInput pins = pcf8574_buttons.digitalReadAll();
-  delay(10);
+  delay(1);
   PCF8574::DigitalInput pins2 = pcf8574_buttons.digitalReadAll();
   if (pins.p0 == pins2.p0){
     if (pins2.p0 != cur_state.p0){
