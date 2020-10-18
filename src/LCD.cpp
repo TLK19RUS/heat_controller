@@ -11,9 +11,11 @@ extern char ctime1[6];
 extern uint8_t set_arr[];
 extern uint8_t state;
 extern menu_item current_menu;
-extern uint8_t menu_cursor_pos;
 extern String confirm_dialog_text;
 extern String list_str;
+extern uint8_t list_cnt;
+extern uint8_t list_shift;
+extern uint8_t list_cursor_pos;
 
 ////////////////// временные переменные
 extern String last_bt;
@@ -139,7 +141,7 @@ void draw_wifi_scan(){
 void draw_wifi_scan_completed(){
   int8_t sc = WiFi.scanComplete();
   if (sc>0){
-    draw_list(0);
+    draw_list(list_shift);
   }
   else{
     display.setCursor(2, 12);
@@ -153,7 +155,7 @@ void draw_list(uint8_t start){
   int ci = list_str.indexOf('|');
   int fi = 0;
   uint8_t i=0;
-  debug_cnt = 1;
+  //debug_cnt = 1;
   while (ci != -1){
     if (i>=start){
       display.setCursor(6, 8+8*(i-start));
@@ -162,12 +164,17 @@ void draw_list(uint8_t start){
     fi = ci + 1;
     ci = list_str.indexOf('|', ci+1);
     i++;
-    if (i>=start+4){
+    if (i>=start+LIST_LINES_CNT){
       break;
     }
-    debug_cnt++;
+    //debug_cnt++;
   }
- 
+  if ((i>=start) && (i<start+LIST_LINES_CNT)){
+    display.setCursor(6, 8+8*(i-start));
+    display.print(list_str.substring(fi));
+  }
+  display.setCursor(0, 8 + 8*(list_cursor_pos-1));
+  display.print((char)187);
 
   /*char* line = strtok((char*)list_str.c_str(), "\n");
   uint8_t i=0;
@@ -216,6 +223,27 @@ void drawstrc1(uint8_t _y, String source, uint8_t _ts){
   dx = (display.width() - sl*6*_ts)/2;
   display.setCursor(dx, _y);
   display.print(source);
+}
+
+
+void move_cursor_down(){
+  if (list_cursor_pos<LIST_LINES_CNT){
+    list_cursor_pos++;      
+  }else{
+    if (list_shift<list_cnt-LIST_LINES_CNT){
+      list_shift++;
+    }
+  }
+}
+
+void move_cursor_up(){
+  if (list_cursor_pos>1){
+    list_cursor_pos--;      
+  }else{
+    if (list_shift>0){
+      list_shift--;
+    }
+  }
 }
 
 String utf8rus(String source)

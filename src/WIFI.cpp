@@ -5,6 +5,9 @@
 extern uint8_t state;
 extern uint8_t prev_state;
 extern String list_str;
+extern uint8_t list_cursor_pos;
+extern uint8_t list_shift;
+extern uint8_t list_cnt;
 
 //////////////
 extern uint8_t debug_cnt;
@@ -28,7 +31,7 @@ void Init_wifi(){
 
 void scan_completed(int scan_result){
   if (scan_result>0){
-    
+    debug_cnt = scan_result;
     uint8_t net_rssi[scan_result];
 
     for(uint8_t i=0;i<scan_result;i++){
@@ -56,8 +59,11 @@ void scan_completed(int scan_result){
         list_str = list_str + "|" + ssid;
       }
     }
+    list_cnt = scan_result;
   }
   if (state == STATE_WIFI_SCAN){
+    list_cursor_pos=1;
+    list_shift=0;
     state = STATE_WIFI_SCAN_COMPLETED;
   }
 }

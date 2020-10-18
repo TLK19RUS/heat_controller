@@ -12,7 +12,7 @@ extern String confirm_dialog_text;
 
 void menu_show(){
   current_menu = main_menu[0];
-  menu_cursor_pos=1;
+  //menu_cursor_pos=1;
   state=STATE_MENU;
   menu_touch();
 }
@@ -42,9 +42,9 @@ void menu_check(){
 
 
 void menu_next_item(){
-  if (menu_cursor_pos<3){
-      menu_cursor_pos ++;
-  }
+  //if (menu_cursor_pos<3){
+  //    menu_cursor_pos ++;
+  //}
 
   uint8_t j=0;
   for (uint8_t i=0;i<menu_items_count;i++){
@@ -61,9 +61,9 @@ void menu_next_item(){
 }
 
 void menu_prev_item(){
-  if (menu_cursor_pos>1){
-      menu_cursor_pos --;
-  }
+  //if (menu_cursor_pos>1){
+  //    menu_cursor_pos --;
+  //}
   int8_t j=0;
   for (int8_t i=0;i<menu_items_count;i++){
     if (main_menu[i].id == current_menu.id){
@@ -161,7 +161,7 @@ void menu_action(bool confirm){
     for (int8_t i=0;i<menu_items_count;i++){
       if (main_menu[i].parent_id == current_menu.id){
         current_menu = main_menu[i];
-        menu_cursor_pos = 1;
+        //menu_cursor_pos = 1;
         return;
       }
     }

@@ -13,6 +13,8 @@
 #define BL_ON 1
 #define BL_OFF 0
 
+#define LIST_LINES_CNT 4
+
 static const unsigned char PROGMEM wifi_off_bmp[] =
 { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x6D, 0xB6, 0x00, 0x00 };
 
@@ -47,3 +49,5 @@ void draw_confirm_dialog();
 void draw_wifi_scan();
 void draw_wifi_scan_completed();
 void draw_list(uint8_t start);
+void move_cursor_down();
+void move_cursor_up();

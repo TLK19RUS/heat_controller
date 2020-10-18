@@ -5,11 +5,16 @@
 #include "menu.h"
 #include "main.h"
 #include "WIFI.h"
+#include "LCD.h"
 
 extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
 extern uint8_t state;
 extern uint8_t prev_state;
+extern String list_str;
+extern uint8_t list_cnt;
+extern uint8_t list_shift;
+extern uint8_t list_cursor_pos;
 
 ////////////////// временные переменные
 extern String last_bt;
@@ -94,6 +99,9 @@ void bt_up_down(){
       menu_prev_item();
       menu_touch();
     break;
+    case STATE_WIFI_SCAN_COMPLETED:
+      move_cursor_up();
+    break;
   }
 
 }
@@ -106,6 +114,9 @@ void bt_down_down(){
     case STATE_MENU:
       menu_next_item();
       menu_touch();
+    break;
+    case STATE_WIFI_SCAN_COMPLETED:
+      move_cursor_down();
     break;
   }
 }

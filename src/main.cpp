@@ -43,10 +43,12 @@ bool confirm_dialog_visible = false;
 String confirm_dialog_text = "";
 
 menu_item current_menu;
-uint8_t menu_cursor_pos=1;
 uint8_t menu_showed=0;
 
 String list_str;
+uint8_t list_cnt;
+uint8_t list_shift=0;
+uint8_t list_cursor_pos=1;
 
 ////////////////// временные переменные
 String last_bt = "";
