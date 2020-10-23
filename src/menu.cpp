@@ -2,23 +2,23 @@
 #include "main.h"
 #include "WIFI.h"
 
-extern uint8_t state;
+extern app_states state;
 extern menu_item current_menu;
 extern uint8_t menu_cursor_pos;
 extern uint8_t menu_showed;
-extern uint8_t prev_state;
+extern app_states prev_state;
 extern bool confirm_dialog_visible;
 extern String confirm_dialog_text;
 
 void menu_show(){
   current_menu = main_menu[0];
   //menu_cursor_pos=1;
-  state=STATE_MENU;
+  state=MENU;
   menu_touch();
 }
 
 void menu_hide(){
-  state=STATE_MAIN;
+  state=MAIN;
 }
 
 void menu_touch(){
@@ -26,12 +26,12 @@ void menu_touch(){
 }
 
 void menu_check(){
-  if ((state==STATE_MENU) || (state==STATE_CONFIRM)){
+  if ((state==MENU) || (state==CONFIRM)){
     menu_showed++;
     if (menu_showed>menu_show_time){
-      if (state==STATE_MENU){
+      if (state==MENU){
         menu_hide();
-      } else if (state==STATE_CONFIRM){
+      } else if (state==CONFIRM){
         hide_confirm_dialog(false);
       }
     }
@@ -185,7 +185,7 @@ void menu_action(bool confirm){
   }
   if (current_menu.action==MENU_WIFI_SCAN) {
     prev_state = state;
-    state = STATE_WIFI_SCAN;
+    state = WIFI_SCAN;
     start_scan();
     return;
   }
@@ -195,7 +195,7 @@ void show_confirm_dialog(String text){
   confirm_dialog_text = text;
   confirm_dialog_visible = true;
   prev_state = state;
-  state = STATE_CONFIRM;
+  state = CONFIRM;
   menu_touch();
 }
 

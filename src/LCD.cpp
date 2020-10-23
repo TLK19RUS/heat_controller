@@ -5,17 +5,31 @@
 #include <ESP8266WiFi.h>
 #include "main.h"
 #include "menu.h"
+//#include "StackList.h"
 
 extern PCF8574_PCD8544 display;
 extern char ctime1[6];
 extern uint8_t set_arr[];
-extern uint8_t state;
+extern app_states state;
+extern app_states prev_state;
+//extern StackList<uint8_t> states;
 extern menu_item current_menu;
 extern String confirm_dialog_text;
 extern String list_str;
 extern uint8_t list_cnt;
 extern uint8_t list_shift;
 extern uint8_t list_cursor_pos;
+
+extern String str_alpha_lower;
+extern String str_alpha_upper;
+extern String str_symbols;
+extern uint8_t alpha_lower_count;
+extern uint8_t alpha_upper_count;
+extern uint8_t symbols_count;
+extern input_modes input_mode;
+extern uint8_t input_x;
+extern uint8_t input_y;
+extern String input_str;
 
 ////////////////// временные переменные
 extern String last_bt;
@@ -50,17 +64,20 @@ void update_display()
   //draw_heater();
   drawRSSI();
   
-  if (state == STATE_MENU){
+  if (state == MENU){
     draw_menu_new();
   }
-  if (state == STATE_CONFIRM){
+  if (state == CONFIRM){
     draw_confirm_dialog();
   }
-  if (state==STATE_WIFI_SCAN){
+  if (state == WIFI_SCAN){
     draw_wifi_scan();
   }
-  if (state==STATE_WIFI_SCAN_COMPLETED){
+  if (state == WIFI_SCAN_COMPLETED){
     draw_wifi_scan_completed();
+  }
+  if (state == INPUT_TEXT){
+    draw_input();
   }
 
   /*wifi_station_get_config(&cfg);*/
@@ -108,19 +125,37 @@ void drawRSSI() {
 
 void draw_soft_bt(){
   display.setTextSize(1);
-  if (state==STATE_MAIN){
+  if (state == MAIN){
    display.setCursor(0, 40);
    display.print(utf8rus("меню"));  
   }
-  if (state==STATE_MENU){
+  if (state == MENU){
    display.setCursor(0, 40);
    display.print(utf8rus("назад"));
    display.setCursor(54, 40);
    display.print(utf8rus("выход"));
   }
-  if ((state==STATE_WIFI_SCAN) || (state==STATE_WIFI_SCAN_COMPLETED)){
+  if ((state == WIFI_SCAN) || (state == WIFI_SCAN_COMPLETED)){
    display.setCursor(0, 40);
    display.print(utf8rus("назад"));
+  }
+  if (state == INPUT_TEXT){
+   display.setCursor(0, 40);
+   if (input_str==""){
+    display.print(utf8rus("назад"));
+   }else{
+     display.print("ok");
+   }
+   display.setCursor(66, 40);
+   if (input_mode==ALPHA_UPPER){
+     display.print(utf8rus("АБВ"));
+   }
+   if (input_mode==ALPHA_LOWER){
+     display.print(utf8rus("абв"));
+   }
+   if (input_mode==SYMBOLS){
+     display.print("!?#");
+   }
   }
 }
 
@@ -216,6 +251,10 @@ void draw_menu_new(){
   //display.print(utf8rus(menu_get_next().name));
 }
 
+uint8_t get_cursor_pos_in_list(){
+  return list_shift + list_cursor_pos - 1;
+}
+
 void drawstrc1(uint8_t _y, String source, uint8_t _ts){
   uint8_t sl;
   uint8_t dx;
@@ -243,6 +282,157 @@ void move_cursor_up(){
     if (list_shift>0){
       list_shift--;
     }
+  }
+}
+
+void draw_input (){
+  display.setTextSize(1);
+  //display.setTextColor(WHITE, BLACK);
+  display.setCursor(0, 9);
+  if (input_str.length()>12){
+    display.print((char)187+input_str.substring(input_str.length()-12));
+  }else{
+    display.print((char)187+input_str);
+  }
+  display.setCursor(78, 9);
+  display.print((char)171);
+
+  for (uint8_t y=0;y<3;y++){
+      for (uint8_t x=0;x<14;x++){
+        if (x==input_x && y==input_y){
+          display.setTextColor(WHITE, BLACK);
+        }
+        display.setCursor(0+x*6, 17+y*8);
+        switch (input_mode) {
+        case ALPHA_LOWER:
+          if (x+y*14<alpha_lower_count){
+            display.print(str_alpha_lower[x+y*14]);
+          }
+          break;
+        case ALPHA_UPPER:
+          if (x+y*14<alpha_upper_count){
+            display.print(str_alpha_upper[x+y*14]);
+          }
+          break;
+        case SYMBOLS:
+          if (x+y*14<symbols_count){
+            display.print(str_symbols[x+y*14]);
+          }
+          break;    
+        }
+        if (x==input_x && y==input_y){
+          display.setTextColor(BLACK);
+        }
+      }
+    }
+
+}
+
+boolean cursor_pos_correct(){
+  boolean ret = true;
+  switch (input_mode)
+  {
+    case ALPHA_LOWER:
+      if (input_x + input_y*14 >= alpha_lower_count){
+        ret = false;
+      }
+    break;
+    case ALPHA_UPPER:
+      if (input_x + input_y*14 >= alpha_upper_count){
+        ret = false;
+      }
+    break;
+    case SYMBOLS:
+      if (input_x + input_y*14 >= symbols_count){
+        ret = false;
+      }
+    break;
+  }
+  return ret;
+}
+
+void input_up(){
+  if (input_y == 0){
+    input_y = 2;
+  }else{
+    input_y--;
+  }
+  if (!cursor_pos_correct()){
+    input_up();
+  }
+}
+
+void input_down(){
+  if (input_y == 2){
+    input_y = 0;
+  }else{
+    input_y++;
+  }
+  if (!cursor_pos_correct()){
+    input_down();
+  }
+}
+
+void input_left(){
+  if (input_x == 0){
+    input_x = 13;
+  }else{
+    input_x--;
+  }
+  if (!cursor_pos_correct()){
+    input_left();
+  }
+}
+void input_right(){
+ if (input_x == 13){
+    input_x = 0;
+  }else{
+    input_x++;
+  }
+  if (!cursor_pos_correct()){
+    input_right();
+  }
+}
+
+void input_ok(){
+  switch (input_mode)
+  {
+  case ALPHA_LOWER:
+    input_str = input_str + str_alpha_lower[input_x+input_y*14];
+    break;
+  case ALPHA_UPPER:
+    input_str = input_str + str_alpha_upper[input_x+input_y*14];
+    break;
+  case SYMBOLS:
+    input_str = input_str + str_symbols[input_x+input_y*14];
+    break;
+  }
+}
+
+
+void show_input(){
+  input_str = "";
+  input_x = 0;
+  input_y = 0;
+  prev_state = state;
+  state = INPUT_TEXT;
+}
+
+void hide_input(){
+  state = prev_state;
+}
+
+void switch_input(){
+  switch(input_mode){
+    case ALPHA_LOWER:
+      input_mode = ALPHA_UPPER;
+    break;
+    case ALPHA_UPPER:
+      input_mode = SYMBOLS;
+    break;
+    case SYMBOLS:
+      input_mode = ALPHA_LOWER;
+    break;
   }
 }
 

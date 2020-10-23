@@ -9,8 +9,8 @@
 
 extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
-extern uint8_t state;
-extern uint8_t prev_state;
+extern app_states state;
+extern app_states prev_state;
 extern String list_str;
 extern uint8_t list_cnt;
 extern uint8_t list_shift;
@@ -45,23 +45,26 @@ void Init_buttons(){
 
 void bt_softl_down(){
   switch(state){
-    case STATE_MAIN:
+    case MAIN:
       menu_show();  
     break;
-    case STATE_MENU:
+    case MENU:
       menu_up_level();  
       menu_touch();
     break;
-    case STATE_CONFIRM:
+    case CONFIRM:
       hide_confirm_dialog(true);
     break;
-    case STATE_WIFI_SCAN:
+    case WIFI_SCAN:
       state = prev_state;
       stop_scan();
     break;
-    case STATE_WIFI_SCAN_COMPLETED:
+    case WIFI_SCAN_COMPLETED:
       state = prev_state;
       stop_scan();
+    break;
+    case INPUT_TEXT:
+      hide_input();
     break;
   }
 
@@ -69,38 +72,70 @@ void bt_softl_down(){
 
 void bt_softr_down(){
   switch(state){
-    case STATE_MAIN:
+    case MAIN:
       
     break;
-    case STATE_MENU:
+    case MENU:
       menu_hide();
     break;
-    case STATE_CONFIRM:
+    case CONFIRM:
       hide_confirm_dialog(false);
+    break;
+    case INPUT_TEXT:
+      switch_input();
     break;
   }
 
 }
 
 void bt_left_down(){
-  
+  switch(state){
+    case MAIN:
+      
+    break;
+    case MENU:
+ 
+    break;
+    case WIFI_SCAN_COMPLETED:
+
+    break;
+    case INPUT_TEXT:
+      input_left();
+    break;
+  }
 }
 
 void bt_right_down(){
-  
+    switch(state){
+    case MAIN:
+      
+    break;
+    case MENU:
+ 
+    break;
+    case WIFI_SCAN_COMPLETED:
+
+    break;
+    case INPUT_TEXT:
+      input_right();
+    break;
+  }
 }
 
 void bt_up_down(){
   switch(state){
-    case STATE_MAIN:
+    case MAIN:
       
     break;
-    case STATE_MENU:
+    case MENU:
       menu_prev_item();
       menu_touch();
     break;
-    case STATE_WIFI_SCAN_COMPLETED:
+    case WIFI_SCAN_COMPLETED:
       move_cursor_up();
+    break;
+    case INPUT_TEXT:
+      input_up();
     break;
   }
 
@@ -108,27 +143,36 @@ void bt_up_down(){
 
 void bt_down_down(){
   switch(state){
-    case STATE_MAIN:
+    case MAIN:
       
     break;
-    case STATE_MENU:
+    case MENU:
       menu_next_item();
       menu_touch();
     break;
-    case STATE_WIFI_SCAN_COMPLETED:
+    case WIFI_SCAN_COMPLETED:
       move_cursor_down();
+    break;
+    case INPUT_TEXT:
+      input_down();
     break;
   }
 }
 
 void bt_ok_down(){
   switch(state){
-    case STATE_MAIN:
+    case MAIN:
       
     break;
-    case STATE_MENU:
+    case MENU:
       menu_action(true);  
       menu_touch();
+    break;
+    case WIFI_SCAN_COMPLETED:
+      connect_to_selected_wifi();
+    break;
+    case INPUT_TEXT:
+      input_ok();
     break;
   }
   //last_bt = "bt_ok_down";

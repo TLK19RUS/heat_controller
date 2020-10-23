@@ -16,8 +16,8 @@ extern uint8_t f_update_rtc;
 void Init_timers(){
   ticker1.attach(1, timer1);
   ticker2.attach(0.5, timer05);
-  ticker3.attach(0.1, timer01);
-  ticker4.attach(0.01, timer001);
+  ticker3.attach(0.2, timer01);
+  ticker4.attach(0.001, timer001);
 }
 
 void timer1(){

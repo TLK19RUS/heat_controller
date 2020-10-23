@@ -1,9 +1,12 @@
 #include "WIFI.h"
 #include <ESP8266WiFi.h>
 #include "main.h"
+#include "LCD.h"
+//#include "StackList.h"
 
-extern uint8_t state;
-extern uint8_t prev_state;
+extern app_states state;
+//extern StackList<uint8_t> states;
+extern app_states prev_state;
 extern String list_str;
 extern uint8_t list_cursor_pos;
 extern uint8_t list_shift;
@@ -61,10 +64,10 @@ void scan_completed(int scan_result){
     }
     list_cnt = scan_result;
   }
-  if (state == STATE_WIFI_SCAN){
+  if (state == WIFI_SCAN){
     list_cursor_pos=1;
     list_shift=0;
-    state = STATE_WIFI_SCAN_COMPLETED;
+    state = WIFI_SCAN_COMPLETED;
   }
 }
 
@@ -74,4 +77,9 @@ void start_scan(){
 
 void stop_scan(){
   WiFi.scanDelete();
+}
+
+void connect_to_selected_wifi(){
+  show_input();
+  //debug_cnt = get_cursor_pos_in_list();
 }

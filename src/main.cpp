@@ -14,6 +14,7 @@
 #include <PCF8574.h>
 #include <PCF8583.h>
 #include <ESP8266WiFi.h>
+//#include "StackList.h"
 
 PCF8574_PCD8544 display = PCF8574_PCD8544(LCD_ADDR, LCD_SCLK_PIN, LCD_DIN_PIN, LCD_DC_PIN, LCD_CE_PIN, LCD_RST_PIN);
 uint8_t f_update_display = 0;
@@ -37,10 +38,25 @@ Ticker ticker2;
 Ticker ticker3;
 Ticker ticker4;
 
-uint8_t state = STATE_MAIN;
-uint8_t prev_state;
+app_states state = MAIN;
+app_states prev_state;
+//StackList<uint8_t> states;
+
 bool confirm_dialog_visible = false;
 String confirm_dialog_text = "";
+
+String str_alpha_lower = "1234567890abcdefghijklmnopqrstuvwxyz";
+String str_alpha_upper = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+String str_symbols     = ".,/;'\\`~-=!@#$%^&*()_+{}:|<>?\"";
+
+uint8_t alpha_lower_count = str_alpha_lower.length();
+uint8_t alpha_upper_count = str_alpha_upper.length();
+uint8_t symbols_count = str_symbols.length();
+
+input_modes input_mode = ALPHA_LOWER;
+uint8_t input_x = 0;
+uint8_t input_y = 0;
+String input_str="";
 
 menu_item current_menu;
 uint8_t menu_showed=0;
