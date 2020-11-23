@@ -1,20 +1,4 @@
 #include "main.h"
-#include <Arduino.h>
-#include <Ticker.h>
-#include "func.h"
-#include "LCD.h"
-#include "RTC.h"
-#include "buttons.h"
-#include "timers.h"
-#include "settings.h"
-#include "menu.h"
-#include "WIFI.h"
-#include <Adafruit_GFX.h>
-#include <PCF8574_PCD8544.h>
-#include <PCF8574.h>
-#include <PCF8583.h>
-#include <ESP8266WiFi.h>
-//#include "StackList.h"
 
 PCF8574_PCD8544 display = PCF8574_PCD8544(LCD_ADDR, LCD_SCLK_PIN, LCD_DIN_PIN, LCD_DC_PIN, LCD_CE_PIN, LCD_RST_PIN);
 uint8_t f_update_display = 0;
@@ -31,16 +15,16 @@ uint8_t t_minute=0;
 uint8_t t_sec=0;
 char ctime1[6]="--:--";
 
-uint8_t set_arr[240];
+//uint8_t set_arr[240];
 
 Ticker ticker1;
 Ticker ticker2;
 Ticker ticker3;
 Ticker ticker4;
 
-app_states state = MAIN;
-app_states prev_state;
-//StackList<uint8_t> states;
+//app_states state = MAIN;
+//app_states prev_state;
+StackList<app_states> states;
 
 bool confirm_dialog_visible = false;
 String confirm_dialog_text = "";
@@ -66,13 +50,22 @@ uint8_t list_cnt;
 uint8_t list_shift=0;
 uint8_t list_cursor_pos=1;
 
-////////////////// временные переменные
-String last_bt = "";
-int set_cnt = 0;
-uint8_t debug_cnt=0;
-//////////////////
+TSettings main_set;
+
+//struct {
+// char ssid[33];
+// char pass[64];
+// uint8_t bssid[6];
+//} main_set;
 
 void setup() {
+  ///////////////////
+  Serial.begin(115200); //GPIO1 (TX) and GPIO3 (RX), 9600kbps, 8-bit data, no parity, 1-bit stop
+  Serial.swap(); //GPIO15 (TX) and GPIO13 (RX)
+  Serial.flush();
+  //////////////////
+  DEBUG_PRINTLN("Start");
+  states.push(MAIN);
   Init_settings();
   Init_buttons();
   Init_LCD();

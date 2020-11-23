@@ -1,8 +1,9 @@
-struct TSettings{
- char ssid[33];
- char pass[64];
- uint8_t mac[6];
-};
+#ifndef __SETTINGS_H__
+#define __SETTINGS_H__
 
 
 void Init_settings();
+void reset_settings();
+void SaveToRTC();
+
+#endif

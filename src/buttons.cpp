@@ -1,24 +1,24 @@
-#include "buttons.h"
-#include <PCF8574.h>
-#include "settings.h"
-#include <PCF8583.h>
-#include "menu.h"
+//#include "buttons.h"
+//#include <PCF8574.h>
+//#include "settings.h"
+//#include <PCF8583.h>
+//#include "menu.h"
 #include "main.h"
-#include "WIFI.h"
-#include "LCD.h"
+//#include "WIFI.h"
+//#include "LCD.h"
 
-extern PCF8574 pcf8574_buttons;
+/* extern PCF8574 pcf8574_buttons;
 extern PCF8574::DigitalInput cur_state;
 extern app_states state;
 extern app_states prev_state;
 extern String list_str;
 extern uint8_t list_cnt;
 extern uint8_t list_shift;
-extern uint8_t list_cursor_pos;
+extern uint8_t list_cursor_pos; */
 
 ////////////////// временные переменные
 extern String last_bt;
-extern uint8_t set_arr[];
+//extern uint8_t set_arr[];
 extern PCF8583 rtc;
 extern int set_cnt;
 //////////////////
@@ -44,7 +44,7 @@ void Init_buttons(){
 }
 
 void bt_softl_down(){
-  switch(state){
+  switch(states.peek()){
     case MAIN:
       menu_show();  
     break;
@@ -56,11 +56,11 @@ void bt_softl_down(){
       hide_confirm_dialog(true);
     break;
     case WIFI_SCAN:
-      state = prev_state;
+      states.pop();
       stop_scan();
     break;
     case WIFI_SCAN_COMPLETED:
-      state = prev_state;
+      states.pop();
       stop_scan();
     break;
     case INPUT_TEXT:
@@ -71,7 +71,7 @@ void bt_softl_down(){
 }
 
 void bt_softr_down(){
-  switch(state){
+  switch(states.peek()){
     case MAIN:
       
     break;
@@ -89,7 +89,7 @@ void bt_softr_down(){
 }
 
 void bt_left_down(){
-  switch(state){
+  switch(states.peek()){
     case MAIN:
       
     break;
@@ -106,7 +106,7 @@ void bt_left_down(){
 }
 
 void bt_right_down(){
-    switch(state){
+    switch(states.peek()){
     case MAIN:
       
     break;
@@ -123,7 +123,7 @@ void bt_right_down(){
 }
 
 void bt_up_down(){
-  switch(state){
+  switch(states.peek()){
     case MAIN:
       
     break;
@@ -142,7 +142,7 @@ void bt_up_down(){
 }
 
 void bt_down_down(){
-  switch(state){
+  switch(states.peek()){
     case MAIN:
       
     break;
@@ -160,7 +160,7 @@ void bt_down_down(){
 }
 
 void bt_ok_down(){
-  switch(state){
+  switch(states.peek()){
     case MAIN:
       
     break;

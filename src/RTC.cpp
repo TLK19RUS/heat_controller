@@ -1,13 +1,14 @@
-#include "RTC.h"
-#include <Arduino.h>
-#include <PCF8583.h>
+//#include "RTC.h"
+//#include <Arduino.h>
+//#include <PCF8583.h>
+#include "main.h"
 
-extern PCF8583 rtc;
+/* extern PCF8583 rtc;
 extern uint8_t time_blink;
 extern uint8_t t_hour;
 extern uint8_t t_minute;
 extern uint8_t t_sec;
-extern char ctime1[6];
+extern char ctime1[6]; */
 
 
 void get_rtc_time(){

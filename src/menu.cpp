@@ -1,24 +1,25 @@
-#include "menu.h"
+//#include "menu.h"
 #include "main.h"
-#include "WIFI.h"
+//#include "WIFI.h"
 
-extern app_states state;
+/* extern app_states state;
 extern menu_item current_menu;
 extern uint8_t menu_cursor_pos;
 extern uint8_t menu_showed;
 extern app_states prev_state;
 extern bool confirm_dialog_visible;
-extern String confirm_dialog_text;
+extern String confirm_dialog_text; */
 
 void menu_show(){
   current_menu = main_menu[0];
   //menu_cursor_pos=1;
-  state=MENU;
+  states.push(MENU);
   menu_touch();
 }
 
 void menu_hide(){
-  state=MAIN;
+  if (states.peek()==MENU)
+  states.pop();
 }
 
 void menu_touch(){
@@ -26,12 +27,12 @@ void menu_touch(){
 }
 
 void menu_check(){
-  if ((state==MENU) || (state==CONFIRM)){
+  if ((states.peek()==MENU) || (states.peek()==CONFIRM)){
     menu_showed++;
     if (menu_showed>menu_show_time){
-      if (state==MENU){
+      if (states.peek()==MENU){
         menu_hide();
-      } else if (state==CONFIRM){
+      } else if (states.peek()==CONFIRM){
         hide_confirm_dialog(false);
       }
     }
@@ -183,9 +184,17 @@ void menu_action(bool confirm){
       return;
     }
   }
+  if (current_menu.action==MENU_DEFAULT) {
+    if (confirm){
+      show_confirm_dialog("Это приведет\nк сбросу\nвсех настроек\nПродолжить?");
+    }else{
+      reset_settings();
+      return;
+    }
+  }
   if (current_menu.action==MENU_WIFI_SCAN) {
-    prev_state = state;
-    state = WIFI_SCAN;
+    //prev_state = state;
+    states.push(WIFI_SCAN);
     start_scan();
     return;
   }
@@ -194,14 +203,14 @@ void menu_action(bool confirm){
 void show_confirm_dialog(String text){
   confirm_dialog_text = text;
   confirm_dialog_visible = true;
-  prev_state = state;
-  state = CONFIRM;
+  //prev_state = state;
+  states.push(CONFIRM);
   menu_touch();
 }
 
 void hide_confirm_dialog(bool action){
   confirm_dialog_visible = false;
-  state = prev_state;
+  states.pop();
   menu_touch();
   if (action){
     menu_action(false);

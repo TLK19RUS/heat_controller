@@ -1,18 +1,17 @@
-#include <Arduino.h>
-#include "LCD.h"
-#include <Adafruit_GFX.h>
-#include <PCF8574_PCD8544.h>
-#include <ESP8266WiFi.h>
+//#include <Arduino.h>
+//#include "LCD.h"
+//#include <Adafruit_GFX.h>
+//#include <PCF8574_PCD8544.h>
+//#include <ESP8266WiFi.h>
 #include "main.h"
-#include "menu.h"
+//#include "menu.h"
 //#include "StackList.h"
 
-extern PCF8574_PCD8544 display;
+/* extern PCF8574_PCD8544 display;
 extern char ctime1[6];
 extern uint8_t set_arr[];
 extern app_states state;
 extern app_states prev_state;
-//extern StackList<uint8_t> states;
 extern menu_item current_menu;
 extern String confirm_dialog_text;
 extern String list_str;
@@ -29,14 +28,8 @@ extern uint8_t symbols_count;
 extern input_modes input_mode;
 extern uint8_t input_x;
 extern uint8_t input_y;
-extern String input_str;
+extern String input_str; */
 
-////////////////// временные переменные
-extern String last_bt;
-extern int set_cnt;
-station_config cfg;
-extern uint8_t debug_cnt;
-//////////////////
 
 void Init_LCD(){
   display.begin(1000000L, LCD_SDA, LCD_SCL);
@@ -58,25 +51,22 @@ void update_display()
   display.clearDisplay();
   draw_time();
 
-  display.setCursor(35, 0);
-  display.print(debug_cnt);
-
   //draw_heater();
   drawRSSI();
   
-  if (state == MENU){
+  if (states.peek() == MENU){
     draw_menu_new();
   }
-  if (state == CONFIRM){
+  if (states.peek() == CONFIRM){
     draw_confirm_dialog();
   }
-  if (state == WIFI_SCAN){
+  if (states.peek() == WIFI_SCAN){
     draw_wifi_scan();
   }
-  if (state == WIFI_SCAN_COMPLETED){
+  if (states.peek() == WIFI_SCAN_COMPLETED){
     draw_wifi_scan_completed();
   }
-  if (state == INPUT_TEXT){
+  if (states.peek() == INPUT_TEXT){
     draw_input();
   }
 
@@ -125,21 +115,21 @@ void drawRSSI() {
 
 void draw_soft_bt(){
   display.setTextSize(1);
-  if (state == MAIN){
+  if (states.peek() == MAIN){
    display.setCursor(0, 40);
    display.print(utf8rus("меню"));  
   }
-  if (state == MENU){
+  if (states.peek() == MENU){
    display.setCursor(0, 40);
    display.print(utf8rus("назад"));
    display.setCursor(54, 40);
    display.print(utf8rus("выход"));
   }
-  if ((state == WIFI_SCAN) || (state == WIFI_SCAN_COMPLETED)){
+  if ((states.peek() == WIFI_SCAN) || (states.peek() == WIFI_SCAN_COMPLETED)){
    display.setCursor(0, 40);
    display.print(utf8rus("назад"));
   }
-  if (state == INPUT_TEXT){
+  if (states.peek() == INPUT_TEXT){
    display.setCursor(0, 40);
    if (input_str==""){
     display.print(utf8rus("назад"));
@@ -161,7 +151,7 @@ void draw_soft_bt(){
 
 void draw_confirm_dialog(){
   display.setTextSize(1);
-  drawstrc1(15, utf8rus(confirm_dialog_text), 1);
+  drawstrc(8, utf8rus(confirm_dialog_text), 1);
   display.setCursor(0, 40);
   display.print(utf8rus("ДА"));
   display.setCursor(66, 40);
@@ -169,8 +159,9 @@ void draw_confirm_dialog(){
 }
 
 void draw_wifi_scan(){
-  display.setCursor(2, 12);
-  display.print(utf8rus("поиск сетей"));
+  drawstrc(12, utf8rus("поиск сетей"),1);
+  //display.setCursor(2, 12);
+  //display.print(utf8rus("поиск сетей"));
 }
 
 void draw_wifi_scan_completed(){
@@ -179,10 +170,11 @@ void draw_wifi_scan_completed(){
     draw_list(list_shift);
   }
   else{
-    display.setCursor(2, 12);
-    display.print(utf8rus("Wi-Fi сети"));
-    display.setCursor(2, 20);
-    display.print(utf8rus("не найдены"));
+    drawstrc(12,"Wi-Fi сети\nне найдены",1);
+    //display.setCursor(2, 12);
+    //display.print(utf8rus("Wi-Fi сети"));
+    //display.setCursor(2, 20);
+    //display.print(utf8rus("не найдены"));
   }
 }
 
@@ -194,7 +186,12 @@ void draw_list(uint8_t start){
   while (ci != -1){
     if (i>=start){
       display.setCursor(6, 8+8*(i-start));
-      display.print(list_str.substring(fi, ci));
+      String tt = list_str.substring(fi, ci);
+      int ci2 = tt.indexOf('\t');
+      if (ci2 != -1){
+        tt = tt.substring(0,ci2);
+      }
+      display.print(tt);
     }
     fi = ci + 1;
     ci = list_str.indexOf('|', ci+1);
@@ -206,7 +203,12 @@ void draw_list(uint8_t start){
   }
   if ((i>=start) && (i<start+LIST_LINES_CNT)){
     display.setCursor(6, 8+8*(i-start));
-    display.print(list_str.substring(fi));
+    String tt = list_str.substring(fi);
+    int ci2 = tt.indexOf('\t');
+    if (ci2 != -1){
+      tt = tt.substring(0,ci2);
+    }
+    display.print(tt);
   }
   display.setCursor(0, 8 + 8*(list_cursor_pos-1));
   display.print((char)187);
@@ -255,6 +257,36 @@ uint8_t get_cursor_pos_in_list(){
   return list_shift + list_cursor_pos - 1;
 }
 
+uint8_t get_value_from_selected_item(){
+  int8_t ret = -1;
+  uint8_t i = 0;
+  int fi = 0;
+  uint8_t cp = get_cursor_pos_in_list();
+  int ci = list_str.indexOf('|');
+  while ((ci != -1) && (ret == -1)){
+    if (i==cp){
+      String tt = list_str.substring(fi, ci);
+      int ci2 = tt.indexOf('\t');
+      if (ci2 != -1){
+        tt = tt.substring(ci2+1);
+        ret = tt.toInt();
+      }
+    }
+    fi = ci + 1;
+    i++;
+    ci = list_str.indexOf('|', ci+1);
+  }
+  if (ret==-1 && i==cp){
+    String tt = list_str.substring(fi, ci);
+    int ci2 = tt.indexOf('\t');
+    if (ci2 != -1){
+      tt = tt.substring(ci2+1);
+      ret = tt.toInt();
+    }
+  }
+  return ret;
+}
+
 void drawstrc1(uint8_t _y, String source, uint8_t _ts){
   uint8_t sl;
   uint8_t dx;
@@ -264,6 +296,31 @@ void drawstrc1(uint8_t _y, String source, uint8_t _ts){
   display.print(source);
 }
 
+void drawstrc(uint8_t _y, String source, uint8_t _ts){
+  int8_t np = source.indexOf('\n');
+  uint8_t fi = 0;
+  uint8_t y = _y;
+  uint8_t sl;
+  uint8_t dx;
+  String str = "";
+  while (np != -1) {
+    str = source.substring(fi, np);
+    //DEBUG_PRINTLN(str);
+    sl = str.length();
+    dx = (display.width() - sl*6*_ts)/2;
+    display.setCursor(dx, y);
+    display.print(str);
+
+    fi = np+1;
+    np = source.indexOf('\n', np+1);
+    y = y + 8;
+  }
+  str = source.substring(fi, np);
+  sl = str.length();
+  dx = (display.width() - sl*6*_ts)/2;
+  display.setCursor(dx, y);
+  display.print(str);
+}
 
 void move_cursor_down(){
   if (list_cursor_pos<LIST_LINES_CNT){
@@ -414,12 +471,17 @@ void show_input(){
   input_str = "";
   input_x = 0;
   input_y = 0;
-  prev_state = state;
-  state = INPUT_TEXT;
+  //prev_state = state;
+  states.push(INPUT_TEXT);
 }
 
 void hide_input(){
-  state = prev_state;
+  states.pop();
+  if (states.peek()==WIFI_CONNECT){
+    wifi_begin();
+    states.pop();
+  }
+
 }
 
 void switch_input(){

@@ -1,3 +1,6 @@
+#ifndef __MENU_H__
+#define __MENU_H__
+
 #include "Arduino.h"
 
 #define menu_show_time 15
@@ -45,3 +48,5 @@ void menu_get_all_items(menu_item *menu_list);
 byte menu_get_items_count();
 void show_confirm_dialog(String text);
 void hide_confirm_dialog(bool action);
+
+#endif

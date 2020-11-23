@@ -1,3 +1,6 @@
+#ifndef __LCD_H__
+#define __LCD_H__
+
 #include <Arduino.h>
 #define LCD_ADDR 36 // 0x24
 #define LCD_SDA 1
@@ -39,6 +42,7 @@ static const unsigned char PROGMEM antenna_bmp[] =
 void Init_LCD();
 void set_bl(uint8_t bl);
 void drawstrc1(uint8_t _y, String source, uint8_t _ts);
+void drawstrc(uint8_t _y, String source, uint8_t _ts);
 String utf8rus(String source);
 void update_display();
 void draw_time();
@@ -52,6 +56,7 @@ void draw_list(uint8_t start);
 void move_cursor_down();
 void move_cursor_up();
 uint8_t get_cursor_pos_in_list();
+uint8_t get_value_from_selected_item();
 void draw_input();
 void show_input();
 void hide_input();
@@ -62,3 +67,5 @@ void input_left();
 void input_right();
 void input_ok();
 boolean cursor_pos_correct();
+
+#endif
