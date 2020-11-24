@@ -54,11 +54,18 @@ void update_display()
   //draw_heater();
   drawRSSI();
   
+  if (states.peek() == ROM_CRC_ERROR){
+    draw_crc_error();
+  }
+
   if (states.peek() == MENU){
     draw_menu_new();
   }
   if (states.peek() == CONFIRM){
     draw_confirm_dialog();
+  }
+  if (states.peek() == MESSAGE){
+    draw_message_dialog();
   }
   if (states.peek() == WIFI_SCAN){
     draw_wifi_scan();
@@ -81,6 +88,10 @@ void draw_time(){
   display.setTextSize(1);
   display.setCursor(0, 0);
   display.print(ctime1);
+}
+
+void draw_crc_error(){
+  drawstrc(12, utf8rus("Ошибка E1\nROM CRC ERROR"), 1);
 }
 
 void drawRSSI() {
@@ -115,6 +126,13 @@ void drawRSSI() {
 
 void draw_soft_bt(){
   display.setTextSize(1);
+  if (states.peek() == ROM_CRC_ERROR){
+   display.setCursor(0, 40);
+   display.print(utf8rus("REBOOT"));
+   display.setCursor(54, 40);
+   display.print(utf8rus("RESET"));
+  }
+
   if (states.peek() == MAIN){
    display.setCursor(0, 40);
    display.print(utf8rus("меню"));  
@@ -156,6 +174,13 @@ void draw_confirm_dialog(){
   display.print(utf8rus("ДА"));
   display.setCursor(66, 40);
   display.print(utf8rus("НЕТ"));
+}
+
+void draw_message_dialog(){
+  display.setTextSize(1);
+  drawstrc(8, utf8rus(message_dialog_text), 1);
+  display.setCursor(0, 40);
+  display.print("OK");
 }
 
 void draw_wifi_scan(){

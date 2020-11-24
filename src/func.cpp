@@ -28,3 +28,6 @@ String get_status_name(uint8_t status){
     return ret;
 }
 
+void restart(){
+    ESP.restart();
+}

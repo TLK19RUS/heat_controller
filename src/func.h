@@ -2,5 +2,6 @@
 #define __FUNC_H__
 
 String get_status_name(uint8_t status);
+void restart();
 
 #endif

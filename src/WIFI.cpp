@@ -27,7 +27,9 @@ void Init_wifi(){
   if (WiFi.getAutoReconnect() != true){
     WiFi.setAutoReconnect(true);
   }
-  WiFi.begin(main_set.ssid, main_set.pass, 0, main_set.bssid, true);
+  if ((main_set.ssid != "") && (main_set.CRCCorrect())){
+    WiFi.begin(main_set.ssid, main_set.pass, 0, main_set.bssid, true);
+  }
   //WiFi.reconnect();
 }
 

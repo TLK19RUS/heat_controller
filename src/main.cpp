@@ -26,8 +26,9 @@ Ticker ticker4;
 //app_states prev_state;
 StackList<app_states> states;
 
-bool confirm_dialog_visible = false;
 String confirm_dialog_text = "";
+String message_dialog_text = "";
+
 
 String str_alpha_lower = "1234567890abcdefghijklmnopqrstuvwxyz";
 String str_alpha_upper = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ";

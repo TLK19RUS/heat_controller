@@ -11,9 +11,25 @@ extern PCF8583 rtc; */
 void Init_settings(){
  //main_set = new TSettings();
  rtc.getROM(main_set.ROM);
- main_set.ReadROM();
- DEBUG_PRINTLN(main_set.ssid);
- DEBUG_PRINTLN(main_set.pass);
+ if (main_set.CRCCorrect()){
+    main_set.ReadROM();
+    if (main_set.def_settings){
+      main_set.def_settings = false;
+      SaveToRTC();
+      show_message_dialog(utf8rus("Настройки были\nсброшены на\nзначения\nпо умолчанию"));
+    }
+    for (uint8_t i=1;i<240;i++){
+      DEBUG_PRINT(main_set.ROM[i]);
+      DEBUG_PRINT(" ");
+    }
+    DEBUG_PRINTLN("");
+    DEBUG_PRINTLN(main_set.ssid);
+    DEBUG_PRINTLN(main_set.pass);
+ }else{
+   states.push(ROM_CRC_ERROR);
+   DEBUG_PRINTLN("ROM CRC ERROR !!!");
+ }
+ 
 }
 
 void reset_settings(){
@@ -30,7 +46,7 @@ void reset_settings(){
   wifi_station_set_config(&config);
   main_set.SetDefault();
   SaveToRTC();
-  ESP.restart();
+  restart();
 }
 
 void SaveToRTC(){

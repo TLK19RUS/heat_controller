@@ -47,6 +47,7 @@ String utf8rus(String source);
 void update_display();
 void draw_time();
 void drawRSSI();
+void draw_crc_error();
 void draw_soft_bt();
 void draw_menu_new();
 void draw_confirm_dialog();
@@ -67,5 +68,6 @@ void input_left();
 void input_right();
 void input_ok();
 boolean cursor_pos_correct();
+void draw_message_dialog();
 
 #endif

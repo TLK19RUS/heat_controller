@@ -22,7 +22,7 @@
 #define DEBUG_PRINTLN(...) { Serial.println(__VA_ARGS__); }
 #define DEBUG_PRINT(...) { Serial.print(__VA_ARGS__); }
 
-enum app_states {MAIN, MENU, CONFIRM, INPUT_TEXT, WIFI_SCAN, WIFI_SCAN_COMPLETED, WIFI_CONNECT};
+enum app_states {MAIN, MENU, CONFIRM, MESSAGE, INPUT_TEXT, WIFI_SCAN, WIFI_SCAN_COMPLETED, WIFI_CONNECT, ROM_CRC_ERROR};
 enum input_modes {ALPHA_LOWER, ALPHA_UPPER, SYMBOLS};
 
 extern PCF8574_PCD8544 display;
@@ -51,8 +51,8 @@ extern Ticker ticker4;
 //extern app_states prev_state;
 extern StackList<app_states> states;
 
-extern bool confirm_dialog_visible;
 extern String confirm_dialog_text;
+extern String message_dialog_text;
 
 extern String str_alpha_lower;
 extern String str_alpha_upper;

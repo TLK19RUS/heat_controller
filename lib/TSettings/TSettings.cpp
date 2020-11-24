@@ -10,6 +10,7 @@ TSettings::TSettings(){
 // 32-95 pass
 // 96-101 bssid
 
+// 238 def_settings 0/1
 // 239 CRC8
 void TSettings::WriteROM(){
     ClearROM();
@@ -28,7 +29,9 @@ void TSettings::WriteROM(){
     for(uint8_t i=0;i<6;i++){
         ROM[96+i] = bssid[i];
     }
-
+    if (def_settings){
+        ROM[238] = 1;
+    }
     ROM[239] = GetROMCRC();
 }
 
@@ -49,6 +52,9 @@ void TSettings::ReadROM(){
     }
     for(uint8_t i=0;i<6;i++){
         bssid[i] = ROM[96+i];
+    }
+    if (ROM[238]==1){
+        def_settings = true;
     }
 }
 
@@ -71,6 +77,7 @@ void TSettings::SetDefault(){
     bssid[3] = 0;
     bssid[4] = 0;
     bssid[5] = 0;
+    def_settings = true;
     WriteROM();
 }
 

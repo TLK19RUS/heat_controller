@@ -55,6 +55,9 @@ void bt_softl_down(){
     case CONFIRM:
       hide_confirm_dialog(true);
     break;
+    case MESSAGE:
+      hide_message_dialog();
+    break;
     case WIFI_SCAN:
       states.pop();
       stop_scan();
@@ -65,6 +68,9 @@ void bt_softl_down(){
     break;
     case INPUT_TEXT:
       hide_input();
+    break;
+    case ROM_CRC_ERROR:
+      restart();
     break;
   }
 
@@ -83,6 +89,9 @@ void bt_softr_down(){
     break;
     case INPUT_TEXT:
       switch_input();
+    break;
+    case ROM_CRC_ERROR:
+      reset_settings();
     break;
   }
 

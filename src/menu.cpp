@@ -2,14 +2,6 @@
 #include "main.h"
 //#include "WIFI.h"
 
-/* extern app_states state;
-extern menu_item current_menu;
-extern uint8_t menu_cursor_pos;
-extern uint8_t menu_showed;
-extern app_states prev_state;
-extern bool confirm_dialog_visible;
-extern String confirm_dialog_text; */
-
 void menu_show(){
   current_menu = main_menu[0];
   //menu_cursor_pos=1;
@@ -180,7 +172,7 @@ void menu_action(bool confirm){
       show_confirm_dialog("Перезагрузка?");
     }else{
       //settings[T_MODE] = MODE_OFF;
-      ESP.restart();
+      restart();
       return;
     }
   }
@@ -202,17 +194,26 @@ void menu_action(bool confirm){
 
 void show_confirm_dialog(String text){
   confirm_dialog_text = text;
-  confirm_dialog_visible = true;
-  //prev_state = state;
   states.push(CONFIRM);
   menu_touch();
 }
 
 void hide_confirm_dialog(bool action){
-  confirm_dialog_visible = false;
   states.pop();
   menu_touch();
   if (action){
     menu_action(false);
   }
+}
+
+
+void show_message_dialog(String text){
+  message_dialog_text = text;
+  states.push(MESSAGE);
+  menu_touch();
+}
+
+void hide_message_dialog(){
+  states.pop();
+  menu_touch();
 }

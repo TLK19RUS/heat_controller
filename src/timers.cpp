@@ -21,7 +21,10 @@ void Init_timers(){
 
 void timer1(){
   menu_check();
-  DEBUG_PRINTLN(get_status_name( WiFi.status()));
+  //DEBUG_PRINTLN(get_status_name( WiFi.status()));
+  //DEBUG_PRINT(main_set.ssid);
+  //DEBUG_PRINT("");
+  //DEBUG_PRINTLN(main_set.pass);
   //DEBUG_PRINTLN(main_set.ssid);
   //DEBUG_PRINTLN(main_set.pass);
   //DEBUG_PRINTLN(main_set.ROM[239]);

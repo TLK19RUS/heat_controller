@@ -48,5 +48,7 @@ void menu_get_all_items(menu_item *menu_list);
 byte menu_get_items_count();
 void show_confirm_dialog(String text);
 void hide_confirm_dialog(bool action);
+void show_message_dialog(String text);
+void hide_message_dialog();
 
 #endif
