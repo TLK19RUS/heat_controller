@@ -12,6 +12,7 @@ uint8_t f_update_rtc = 0;
 uint8_t time_blink = 1;
 uint8_t t_hour=0;
 uint8_t t_minute=0;
+uint8_t t_pminute=255;
 uint8_t t_sec=0;
 char ctime1[6]="--:--";
 
@@ -53,6 +54,17 @@ uint8_t list_cursor_pos=1;
 
 TSettings main_set;
 
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
+
+wl_status_t prev_status;
+
+///////////////////////
+uint32_t ms;
+uint32_t ms2;
+uint32_t ms3;
+/////////////////////
+
 //struct {
 // char ssid[33];
 // char pass[64];
@@ -72,20 +84,26 @@ void setup() {
   Init_LCD();
   Init_wifi();
   Init_timers();
-  
+  ud();
 }
 
 void loop() {
   if (f_readbuttons==1){
     f_readbuttons = 0;
+    uint32_t cms = millis();
     readbuttons();
+    ms = millis() - cms;
   }
   if (f_update_rtc==1){
     f_update_rtc = 0;
+    uint32_t cms = millis();
     get_rtc_time();
+    ms2 = millis() - cms;
   }
   if (f_update_display==1){
     f_update_display = 0;
+    uint32_t cms = millis();
     update_display();
+    ms3 = millis() - cms;
   }
 }

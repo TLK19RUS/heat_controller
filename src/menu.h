@@ -7,7 +7,7 @@
 
 enum item_types {IT_MENU, IT_ITEM};
 enum menu_actions {MENU_NONE, MENU_SETTINGS_TEMP, MENU_SETTINGS_TIME, MENU_DSPLAY_BL, MENU_REBOOT,MENU_DEFAULT,
-                  MENU_WIFI_SCAN, MENU_WIFI_STATUS};
+                  MENU_WIFI_SCAN, MENU_WIFI_STATUS,MENU_TIME_SYNC};
 
 struct menu_item{
   int id;
@@ -17,11 +17,12 @@ struct menu_item{
   menu_actions action;
 };
 
-const uint8_t menu_items_count = 13;
+const uint8_t menu_items_count = 14;
 const menu_item main_menu[] = {
   {1, "настройки", 0, IT_MENU, MENU_NONE},
   {10, "температура", 1, IT_ITEM, MENU_SETTINGS_TEMP},
-  {11, "дата/время", 1, IT_ITEM, MENU_SETTINGS_TIME},
+  {11, "дата/время", 1, IT_MENU, MENU_NONE},
+  {111, "синхронизация", 11, IT_ITEM, MENU_TIME_SYNC},
   {12, "дисплей", 1, IT_MENU, MENU_NONE},
   {121, "подсветка", 12, IT_ITEM, MENU_DSPLAY_BL},
   {13, "сеть", 1, IT_MENU, MENU_NONE},

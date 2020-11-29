@@ -7,11 +7,13 @@ void menu_show(){
   //menu_cursor_pos=1;
   states.push(MENU);
   menu_touch();
+  ud();
 }
 
 void menu_hide(){
   if (states.peek()==MENU)
   states.pop();
+  ud();
 }
 
 void menu_touch(){
@@ -190,12 +192,17 @@ void menu_action(bool confirm){
     start_scan();
     return;
   }
+  if (current_menu.action==MENU_TIME_SYNC){
+    sync_time();
+    return;
+  }
 }
 
 void show_confirm_dialog(String text){
   confirm_dialog_text = text;
   states.push(CONFIRM);
   menu_touch();
+  ud();
 }
 
 void hide_confirm_dialog(bool action){
@@ -204,6 +211,7 @@ void hide_confirm_dialog(bool action){
   if (action){
     menu_action(false);
   }
+  ud();
 }
 
 
@@ -211,9 +219,11 @@ void show_message_dialog(String text){
   message_dialog_text = text;
   states.push(MESSAGE);
   menu_touch();
+  ud();
 }
 
 void hide_message_dialog(){
   states.pop();
   menu_touch();
+  ud();
 }

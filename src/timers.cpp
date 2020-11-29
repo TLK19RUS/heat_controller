@@ -15,12 +15,17 @@ extern uint8_t f_update_rtc; */
 void Init_timers(){
   ticker1.attach(1, timer1);
   ticker2.attach(0.5, timer05);
-  ticker3.attach(0.2, timer01);
-  ticker4.attach(0.001, timer001);
+  ticker3.attach(0.5, timer01);
+  ticker4.attach(0.02, timer001);
 }
 
 void timer1(){
   menu_check();
+  CheckWiFi();
+  //DEBUG_PRINTLN("----------");  
+  //DEBUG_PRINTLN(ms);
+  //DEBUG_PRINTLN(ms2);
+  //DEBUG_PRINTLN(ms3);
   //DEBUG_PRINTLN(get_status_name( WiFi.status()));
   //DEBUG_PRINT(main_set.ssid);
   //DEBUG_PRINT("");
@@ -54,7 +59,7 @@ void timer05(){
 }
 
 void timer01(){
-  f_update_display = 1;
+  //f_update_display = 1;
 }
 
 void timer001(){

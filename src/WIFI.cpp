@@ -16,6 +16,28 @@ extern uint8_t debug_cnt;
 //////////////
 
 
+void CheckWiFi(){
+  wl_status_t status = WiFi.status();
+  if (status!=prev_status){
+    if (status == WL_CONNECTED){
+      onWiFiConnect();
+    }
+    if (status == WL_DISCONNECTED){
+      onWiFiDisconnect();
+    }
+    prev_status = status;
+  }
+}
+
+void onWiFiConnect(){
+  DEBUG_PRINTLN("connected to wifi "+WiFi.SSID());
+  ud();
+}
+void onWiFiDisconnect(){
+  DEBUG_PRINTLN("disconnected from wifi");
+  ud();
+}
+
 void Init_wifi(){
   if (WiFi.getPersistent() == true){
     WiFi.persistent(false);
@@ -72,6 +94,7 @@ void scan_completed(int scan_result){
     states.pop();
     states.push(WIFI_SCAN_COMPLETED);
   }
+  ud();
 }
 
 void start_scan(){
@@ -108,4 +131,5 @@ void wifi_begin(){
   WiFi.begin(WiFi.SSID(wid), input_str, 0, WiFi.BSSID(wid), true);
   
   states.pop();
+  ud();
 }

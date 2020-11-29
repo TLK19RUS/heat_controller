@@ -31,3 +31,12 @@ String get_status_name(uint8_t status){
 void restart(){
     ESP.restart();
 }
+
+String lpad(int value, uint8_t pad_len, char pad_char){
+    String ret = String(value);
+    uint8_t sl = ret.length();
+    for (uint8_t j=sl;j<pad_len;j++){
+        ret = "" + pad_char + ret;
+    }
+    return ret;
+}

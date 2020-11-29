@@ -58,7 +58,7 @@
 #define SATURDAY 5
 #define SUNDAY 6
 
-#define BASE_YEAR 2012
+#define BASE_YEAR 2020
 #define ALARM_ANY 99
 
 class PCF8583 {

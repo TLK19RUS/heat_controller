@@ -73,7 +73,7 @@ void bt_softl_down(){
       restart();
     break;
   }
-
+  ud();
 }
 
 void bt_softr_down(){
@@ -94,7 +94,7 @@ void bt_softr_down(){
       reset_settings();
     break;
   }
-
+  ud();
 }
 
 void bt_left_down(){
@@ -112,6 +112,7 @@ void bt_left_down(){
       input_left();
     break;
   }
+  ud();
 }
 
 void bt_right_down(){
@@ -129,6 +130,7 @@ void bt_right_down(){
       input_right();
     break;
   }
+  ud();
 }
 
 void bt_up_down(){
@@ -147,7 +149,7 @@ void bt_up_down(){
       input_up();
     break;
   }
-
+  ud();
 }
 
 void bt_down_down(){
@@ -166,6 +168,7 @@ void bt_down_down(){
       input_down();
     break;
   }
+  ud();
 }
 
 void bt_ok_down(){
@@ -184,6 +187,7 @@ void bt_ok_down(){
       input_ok();
     break;
   }
+  ud();
   //last_bt = "bt_ok_down";
   //set_arr[0] = 1;
   //set_arr[1] = 2;

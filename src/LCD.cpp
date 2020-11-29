@@ -46,6 +46,10 @@ void set_bl(uint8_t bl){
  display.digitalWrite(LCD_BL_PIN, bl);
 }
 
+void ud(){
+  f_update_display = 1;
+}
+
 void update_display()
 {
   display.clearDisplay();
@@ -56,6 +60,10 @@ void update_display()
   
   if (states.peek() == ROM_CRC_ERROR){
     draw_crc_error();
+  }
+  
+  if (states.peek() == MAIN){
+    draw_date();
   }
 
   if (states.peek() == MENU){
@@ -76,8 +84,6 @@ void update_display()
   if (states.peek() == INPUT_TEXT){
     draw_input();
   }
-
-  /*wifi_station_get_config(&cfg);*/
   
   draw_soft_bt();
   display.display();
@@ -88,6 +94,108 @@ void draw_time(){
   display.setTextSize(1);
   display.setCursor(0, 0);
   display.print(ctime1);
+}
+
+void draw_date(){
+  //display.setTextSize(1);
+  //display.setCursor(0, 12);
+  //display.print(ms);
+  //display.print(".");
+  //display.print(rtc.getMonth());
+  //display.print(".");
+  //display.print(rtc.getYear());
+  //display.print(" ");
+  //display.print(rtc.getWeekday()+1);
+
+  drawBitmapFont(44, 42, lpad(rtc.getDay(),2, '0')+"."+lpad(rtc.getMonth(),2, '0')+"."+String(rtc.getYear()-2000));
+}
+
+void drawBitmapFont(uint8_t x, uint8_t y, String value){
+  uint8_t sx = x;
+  for (uint8_t i=0;i<value.length();i++){
+    switch(value[i]){
+      case '0':
+        display.drawBitmap(sx, y,  char_0, 4, 5, 1);
+        sx += 5;
+      break;
+      case '1':
+        display.drawBitmap(sx, y,  char_1, 4, 5, 1);
+        sx += 5;
+      break;
+      case '2':
+        display.drawBitmap(sx, y,  char_2, 4, 5, 1);
+        sx += 5;
+      break;
+      case '3':
+        display.drawBitmap(sx, y,  char_3, 4, 5, 1);
+        sx += 5;
+      break;
+      case '4':
+        display.drawBitmap(sx, y,  char_4, 4, 5, 1);
+        sx += 5;
+      break;
+      case '5':
+        display.drawBitmap(sx, y,  char_5, 4, 5, 1);
+        sx += 5;
+      break;
+      case '6':
+        display.drawBitmap(sx, y,  char_6, 4, 5, 1);
+        sx += 5;
+      break;
+      case '7':
+        display.drawBitmap(sx, y,  char_7, 4, 5, 1);
+        sx += 5;
+      break;
+      case '8':
+        display.drawBitmap(sx, y,  char_8, 4, 5, 1);
+        sx += 5;
+      break;
+      case '9':
+        display.drawBitmap(sx, y,  char_9, 4, 5, 1);
+        sx += 5;
+      break;
+      case '.':
+        display.drawBitmap(sx, y,  char_dot, 4, 5, 1);
+        sx += 5;
+      break;
+      case '-':
+        display.drawBitmap(sx, y,  char_dash, 4, 5, 1);
+        sx += 5;
+      break;
+      case ':':
+        display.drawBitmap(sx, y,  char_colon, 4, 5, 1);
+        sx += 5;
+      break;
+      case 'A':
+        display.drawBitmap(sx, y,  char_a, 4, 5, 1);
+        sx += 5;
+      break;
+      case 'B':
+        display.drawBitmap(sx, y,  char_b, 4, 5, 1);
+        sx += 5;
+      break;
+      case 'C':
+        display.drawBitmap(sx, y,  char_c, 4, 5, 1);
+        sx += 5;
+      break;
+      case 'D':
+        display.drawBitmap(sx, y,  char_d, 4, 5, 1);
+        sx += 5;
+      break;
+      case 'E':
+        display.drawBitmap(sx, y,  char_e, 4, 5, 1);
+        sx += 5;
+      break;
+      case 'F':
+        display.drawBitmap(sx, y,  char_f, 4, 5, 1);
+        sx += 5;
+      break;
+    }
+  }
+}
+
+void drawBitmapFont(uint8_t x, uint8_t y, int value){
+
 }
 
 void draw_crc_error(){
@@ -503,7 +611,9 @@ void show_input(){
 void hide_input(){
   states.pop();
   if (states.peek()==WIFI_CONNECT){
-    wifi_begin();
+    if (input_str!=""){
+      wifi_begin();
+    }
     states.pop();
   }
 

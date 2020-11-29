@@ -303,7 +303,8 @@ uint8_t PCF8583::byte2bcd(uint8_t value){
 
 int PCF8583::getROM(uint8_t* _rom) {
     Wire.beginTransmission(_address);
-    Wire.write(0x10); // ROM area start
+    //Wire.write(0x10); // ROM area start
+    Wire.write(0x14); // ROM area start
     Wire.endTransmission();
     Wire.requestFrom(_address, (uint8_t) 120);
     int offset = 0;
@@ -312,7 +313,7 @@ int PCF8583::getROM(uint8_t* _rom) {
         _rom[offset] = Wire.read(); 
         offset++;
     };
-    Wire.requestFrom(_address, (uint8_t) 120);
+    Wire.requestFrom(_address, (uint8_t) 115);
     while(Wire.available())    
     { 
         _rom[offset] = Wire.read(); 
@@ -324,12 +325,14 @@ int PCF8583::getROM(uint8_t* _rom) {
 uint8_t PCF8583::setROM(uint8_t* _rom){
     uint8_t ret;
     Wire.beginTransmission(_address);
-    Wire.write(0x10);
+    //Wire.write(0x10);
+    Wire.write(0x14);
     Wire.write(_rom, 120);
     ret = Wire.endTransmission();
     Wire.beginTransmission(_address);
-    Wire.write(0x10+120);
-    Wire.write(_rom+120, 120);
+    //Wire.write(0x10+120);
+    Wire.write(0x14+120);
+    Wire.write(_rom+120, 115);
     ret = ret + Wire.endTransmission();
     return ret;
 }

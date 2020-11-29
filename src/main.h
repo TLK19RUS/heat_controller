@@ -18,6 +18,10 @@
 #include <ESP8266WiFi.h>
 #include "StackList.h"
 #include <TSettings.h>
+#include <NTPClient.h>
+//#include <time.h>
+#include <TimeLib.h>
+#include <WiFiUdp.h>
 
 #define DEBUG_PRINTLN(...) { Serial.println(__VA_ARGS__); }
 #define DEBUG_PRINT(...) { Serial.print(__VA_ARGS__); }
@@ -37,6 +41,7 @@ extern uint8_t f_update_rtc;
 extern uint8_t time_blink;
 extern uint8_t t_hour;
 extern uint8_t t_minute;
+extern uint8_t t_pminute;
 extern uint8_t t_sec;
 extern char ctime1[6];
 
@@ -76,5 +81,17 @@ extern uint8_t list_shift;
 extern uint8_t list_cursor_pos;
 
 extern TSettings main_set;
+
+extern WiFiUDP ntpUDP;
+extern NTPClient timeClient;
+
+extern wl_status_t prev_status;
+
+////////////////////////////
+extern uint32_t ms;
+extern uint32_t ms2;
+extern uint32_t ms3;
+
+///////////////////////////
 
 #endif

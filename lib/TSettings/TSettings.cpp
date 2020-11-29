@@ -9,9 +9,10 @@ TSettings::TSettings(){
 // 0-31 ssid
 // 32-95 pass
 // 96-101 bssid
+// 102 timeZone
 
-// 238 def_settings 0/1
-// 239 CRC8
+// 233 def_settings 0/1
+// 234 CRC8
 void TSettings::WriteROM(){
     ClearROM();
     for(uint8_t i=0;i<ssid.length();i++){
@@ -29,10 +30,11 @@ void TSettings::WriteROM(){
     for(uint8_t i=0;i<6;i++){
         ROM[96+i] = bssid[i];
     }
+    ROM[102] = timeZone;
     if (def_settings){
-        ROM[238] = 1;
+        ROM[233] = 1;
     }
-    ROM[239] = GetROMCRC();
+    ROM[234] = GetROMCRC();
 }
 
 void TSettings::ReadROM(){
@@ -53,17 +55,18 @@ void TSettings::ReadROM(){
     for(uint8_t i=0;i<6;i++){
         bssid[i] = ROM[96+i];
     }
-    if (ROM[238]==1){
+    timeZone = ROM[102];
+    if (ROM[233]==1){
         def_settings = true;
     }
 }
 
 bool TSettings::CRCCorrect(){
-    return ROM[239]==GetROMCRC();
+    return ROM[234]==GetROMCRC();
 }
 
 void TSettings::ClearROM(){
-    for (uint8_t i=0;i<240;i++){
+    for (uint8_t i=0;i<235;i++){
         ROM[i] = 0;
     }
 }
@@ -77,20 +80,21 @@ void TSettings::SetDefault(){
     bssid[3] = 0;
     bssid[4] = 0;
     bssid[5] = 0;
+    timeZone = 7;
     def_settings = true;
     WriteROM();
 }
 
 byte TSettings::GetROMCRC(){
-    return CRC8(&ROM[0], 239);
+    return CRC8(&ROM[0], 234);
 }
 
 uint8_t TSettings::CRC8(const byte *data, byte len) {
   byte crc = 0x00;
   while (len--) {
     byte extract = *data++;
-    DEBUG_PRINT(extract);
-    DEBUG_PRINT(" ");
+    //DEBUG_PRINT(extract);
+    //DEBUG_PRINT(" ");
     //DEBUG_PRINT(" ");
     for (byte tempI = 8; tempI; tempI--) {
       byte sum = (crc ^ extract) & 0x01;
@@ -101,7 +105,7 @@ uint8_t TSettings::CRC8(const byte *data, byte len) {
       extract >>= 1;
     }
   }
-  DEBUG_PRINTLN("");
-  DEBUG_PRINTLN(crc);
+  //DEBUG_PRINTLN("");
+  //DEBUG_PRINTLN(crc);
   return crc;
 }
